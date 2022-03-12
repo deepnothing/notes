@@ -1,6 +1,5 @@
 <template>
   <vue-resizable
-    class="resizable-component"
     ref="resizableComponent"
     :dragSelector="dragSelector"
     :active="handlers"
@@ -39,27 +38,21 @@
 <script>
 import VueResizable from "vue-resizable";
 
-
-
 export default {
   name: "Note",
   props: ["indexValue", "selectedValue"],
   components: {
     VueResizable,
   },
-  
-  data() {
-    const tW = 200;
-    const tH = 200;
-    const localData = localStorage.getItem(this.indexValue);
 
-    return {     
-      text: localData ? JSON.parse(localData).text : "",
-      color: localData ? JSON.parse(localData).color : "#28abe3",
-      left: localData ? JSON.parse(localData).left : `110px`,
-      top: localData ? JSON.parse(localData).top : `${210 * this.indexValue}px`,
-      height: localData ? JSON.parse(localData).height : tH,
-      width: localData ? JSON.parse(localData).width : tW,
+  data() {
+    return {
+      text: this.noteData().text,
+      color: this.noteData().color,
+      left: this.noteData().left,
+      top: this.noteData().top,
+      height: this.noteData().height,
+      width: this.noteData().width,
       minW: 100,
       minH: 100,
       zIndex: 0,
@@ -70,23 +63,14 @@ export default {
   },
 
   methods: {
-   
     handleInput(event) {
-    
       //set text
       this.text = event.target.value;
 
       //set localstrage
       localStorage.setItem(
         this.indexValue,
-        JSON.stringify({
-          text: event.target.value,
-          color: this.color,
-          width: this.width,
-          height: this.height,
-          left: this.left,
-          top: this.top,
-        })
+        JSON.stringify({ ...this.noteData(), text: event.target.value })
       );
     },
 
@@ -95,32 +79,19 @@ export default {
       this.color = newColor;
 
       //set localstorage
-
       localStorage.setItem(
         this.indexValue,
-        JSON.stringify({
-          text:this.text,
-          color: newColor,
-          width: this.width,
-          height: this.height,
-          left: this.left,
-          top: this.top,
-        })
+        JSON.stringify({ ...this.noteData(), color: newColor })
       );
     },
+
     //vue resize and drag handler function
     eHandler(data) {
-      //set new size and positions on drag
-      this.height = data.height;
-      this.width = data.width;
-      this.top = data.top;
-      this.left = data.left;
       //set localstorage
       localStorage.setItem(
         this.indexValue,
         JSON.stringify({
-          text: this.text,
-          color: this.color,
+          ...this.noteData(),
           width: `${data.width}px`,
           height: `${data.height}px`,
           left: `${data.left - -8}px`,
@@ -134,6 +105,9 @@ export default {
 
       //click through handler element
       this.$refs.textarea.focus();
+    },
+    noteData() {
+      return JSON.parse(localStorage.getItem(this.indexValue));
     },
   },
 };

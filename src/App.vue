@@ -54,6 +54,7 @@ export default {
     };
   },
   mounted() {
+    //get number of notes
     if (localStorage.noteCount) {
       this.noteCount = localStorage.noteCount;
       this.noteCount++;
@@ -61,13 +62,27 @@ export default {
   },
   methods: {
     addNote() {
+      //add new note
       localStorage.noteCount = this.noteCount;
       this.noteCount++;
+      localStorage.setItem(
+        this.noteCount,
+        JSON.stringify({
+          text: "",
+          color: "#28abe3",
+          width: 200,
+          height: 200,
+          left: `110px`,
+          top: `${210 * this.noteCount}px`,
+        })
+      );
     },
     onSelectedUpdate(newData) {
+      //set selected note
       this.selected = newData;
     },
     setChildColor(index, newColor) {
+      //trigger function in child component
       this.$refs.noteRef[index].setColor(newColor);
     },
   },
