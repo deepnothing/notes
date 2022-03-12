@@ -2,6 +2,9 @@
   <div id="app">
     <div class="top-container">
       <button class="new-note" @click="addNote">+ New Note</button>
+      <div>
+        Notes:<strong>{{ noteCount }}</strong> &nbsp;
+      </div>
       <div>Color:</div>
       <button
         class="color-button"
@@ -73,7 +76,7 @@ export default {
           width: 200,
           height: 200,
           left: `110px`,
-          top: `${210 * this.noteCount}px`,
+          top: `210px`,
         })
       );
     },
