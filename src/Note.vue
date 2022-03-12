@@ -28,7 +28,7 @@
       class="drag-container"
       ref="textarea"
       v-bind:style="{
-        background: color,
+        background: this.color,
       }"
       placeholder="New Note"
       :value="text"
@@ -39,58 +39,94 @@
 <script>
 import VueResizable from "vue-resizable";
 
+
+
 export default {
   name: "Note",
-  props: ["indexValue", "selectedValue", "selectedColor"],
+  props: ["indexValue", "selectedValue"],
   components: {
     VueResizable,
   },
+  
   data() {
     const tW = 200;
     const tH = 200;
-    return {
-      text: "",
-      color: "#28abe3",
-      zIndex: 0,
-      handlers: ["r", "rb", "b", "lb", "l", "lt", "t", "rt"],
-      left: `110px`,
-      top: `${210 * this.indexValue}px`,
-      height: tH,
-      width: tW,
+    const localData = localStorage.getItem(this.indexValue);
+
+    return {     
+      text: localData ? JSON.parse(localData).text : "",
+      color: localData ? JSON.parse(localData).color : "#28abe3",
+      left: localData ? JSON.parse(localData).left : `110px`,
+      top: localData ? JSON.parse(localData).top : `${210 * this.indexValue}px`,
+      height: localData ? JSON.parse(localData).height : tH,
+      width: localData ? JSON.parse(localData).width : tW,
       minW: 100,
       minH: 100,
+      zIndex: 0,
+      handlers: ["r", "rb", "b", "lb", "l", "lt", "t", "rt"],
       event: "",
       dragSelector: ".drag-container",
     };
   },
-  beforeMount() {
-    //retreive text
-    if (localStorage.getItem(`${this.indexValue}text`)) {
-      this.text = localStorage.getItem(`${this.indexValue}text`);
-    }
-    //retreive  color
-    if (localStorage.getItem(`${this.indexValue}color`)) {
-      this.color = localStorage.getItem(`${this.indexValue}color`);
-    }
-    //sretreive  size
-    if (localStorage.getItem(`${this.indexValue}width`)) {
-      this.width = localStorage.getItem(`${this.indexValue}width`) + "px";
-    }
-    if (localStorage.getItem(`${this.indexValue}height`)) {
-      this.height = localStorage.getItem(`${this.indexValue}height`) + "px";
-    }
-    //sretreive  position
-    if (localStorage.getItem(`${this.indexValue}left`)) {
-      this.left = localStorage.getItem(`${this.indexValue}left`) - -8 + "px";
-    }
-    if (localStorage.getItem(`${this.indexValue}top`)) {
-      this.top = localStorage.getItem(`${this.indexValue}top`) - -38 + "px";
-    }
-  },
+
   methods: {
+   
     handleInput(event) {
+    
+      //set text
       this.text = event.target.value;
-      localStorage.setItem(`${this.indexValue}text`, this.text);
+
+      //set localstrage
+      localStorage.setItem(
+        this.indexValue,
+        JSON.stringify({
+          text: event.target.value,
+          color: this.color,
+          width: this.width,
+          height: this.height,
+          left: this.left,
+          top: this.top,
+        })
+      );
+    },
+
+    setColor(newColor) {
+      //set color
+      this.color = newColor;
+
+      //set localstorage
+
+      localStorage.setItem(
+        this.indexValue,
+        JSON.stringify({
+          text:this.text,
+          color: newColor,
+          width: this.width,
+          height: this.height,
+          left: this.left,
+          top: this.top,
+        })
+      );
+    },
+    //vue resize and drag handler function
+    eHandler(data) {
+      //set new size and positions on drag
+      this.height = data.height;
+      this.width = data.width;
+      this.top = data.top;
+      this.left = data.left;
+      //set localstorage
+      localStorage.setItem(
+        this.indexValue,
+        JSON.stringify({
+          text: this.text,
+          color: this.color,
+          width: `${data.width}px`,
+          height: `${data.height}px`,
+          left: `${data.left - -8}px`,
+          top: `${data.top - -38}px`,
+        })
+      );
     },
     setSelected() {
       //pass note index up to parent to select note
@@ -98,27 +134,6 @@ export default {
 
       //click through handler element
       this.$refs.textarea.focus();
-    },
-    setColor(newColor) {
-      this.color = newColor;
-      localStorage.setItem(`${this.indexValue}color`, newColor);
-    },
-
-    //vue resize anddrag handler function
-    eHandler(data) {
-      //set new size and positions on drag
-      this.width = data.width;
-      this.height = data.height;
-      this.left = data.left;
-      this.top = data.top;
-      this.event = data.eventName;
-
-      //set position in localstorage
-      localStorage.setItem(`${this.indexValue}width`, data.width);
-      localStorage.setItem(`${this.indexValue}height`, data.height);
-      //set size in localstorage
-      localStorage.setItem(`${this.indexValue}left`, data.left);
-      localStorage.setItem(`${this.indexValue}top`, data.top);
     },
   },
 };

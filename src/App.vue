@@ -32,7 +32,6 @@
         v-for="note in noteCount"
         :index-value="note"
         :selected-value="selected"
-        :selected-color="color"
         @update="onSelectedUpdate"
       />
     </div>
@@ -47,12 +46,11 @@ export default {
   components: {
     Note,
   },
-  // state
+
   data() {
     return {
       noteCount: 0,
       selected: 0,
-      color: "#28abe3",
     };
   },
   mounted() {
@@ -61,7 +59,6 @@ export default {
       this.noteCount++;
     }
   },
-  // actions
   methods: {
     addNote() {
       localStorage.noteCount = this.noteCount;
