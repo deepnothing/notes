@@ -3,7 +3,7 @@
     <div class="top-container">
       <button class="new-note" @click="addNote">+ New Note</button>
       <div>
-        Notes:<strong>{{ noteCount }}</strong> &nbsp;
+        Notes:<strong>{{ notes }}</strong> &nbsp;
       </div>
       <div>Color:</div>
       <button
@@ -32,7 +32,7 @@
       <note
         :key="note"
         ref="noteRef"
-        v-for="note in noteCount"
+        v-for="note in notes"
         :index-value="note"
         :selected-value="selected"
         @update="onSelectedUpdate"
@@ -52,24 +52,15 @@ export default {
 
   data() {
     return {
-      noteCount: 0,
       selected: 0,
+      notes: localStorage.length,
     };
   },
-  mounted() {
-    //get number of notes
-    if (localStorage.noteCount) {
-      this.noteCount = localStorage.noteCount;
-      this.noteCount++;
-    }
-  },
+
   methods: {
     addNote() {
-      //add new note
-      localStorage.noteCount = this.noteCount;
-      this.noteCount++;
       localStorage.setItem(
-        this.noteCount,
+        (this.notes += 1),
         JSON.stringify({
           text: "",
           color: "#28abe3",
