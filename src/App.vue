@@ -7,24 +7,11 @@
       </div>
       <div>Color:</div>
       <button
+        v-for="i in colors"
+        :key="i"
         class="color-button"
-        :style="{ background: '#28abe3' }"
-        @click="selected !== 0 ? setChildColor(selected - 1, '#28abe3') : null"
-      />
-      <button
-        class="color-button"
-        :style="{ background: '#f05b24' }"
-        @click="selected !== 0 ? setChildColor(selected - 1, '#f05b24') : null"
-      />
-      <button
-        class="color-button"
-        :style="{ background: '#8cc73e' }"
-        @click="selected !== 0 ? setChildColor(selected - 1, '#8cc73e') : null"
-      />
-      <button
-        class="color-button"
-        :style="{ background: '#f6931f' }"
-        @click="selected !== 0 ? setChildColor(selected - 1, '#f6931f') : null"
+        :style="{ background: i }"
+        @click="selected !== 0 ? setChildColor(selected - 1, i) : null"
       />
     </div>
 
@@ -54,6 +41,7 @@ export default {
     return {
       selected: 0,
       notes: localStorage.length,
+      colors: ["#28abe3", "#f05b24", "#8cc73e", "#f6931f"],
     };
   },
 
