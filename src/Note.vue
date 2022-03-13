@@ -47,12 +47,12 @@ export default {
 
   data() {
     return {
-      text: this.noteData().text,
-      color: this.noteData().color,
-      left: this.noteData().left,
-      top: this.noteData().top,
-      height: this.noteData().height,
-      width: this.noteData().width,
+      text: this.noteData()?.text,
+      color: this.noteData()?.color,
+      left: this.noteData()?.left,
+      top: this.noteData()?.top,
+      height: this.noteData()?.height,
+      width: this.noteData()?.width,
       minW: 100,
       minH: 100,
       zIndex: 0,
@@ -85,7 +85,7 @@ export default {
       );
     },
 
-    //vue resize and drag handler function
+    //resize and drag handler function
     eHandler(data) {
       //set localstorage
       localStorage.setItem(
